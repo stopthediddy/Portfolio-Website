@@ -268,6 +268,7 @@
             height: 100%;
             z-index: -1;
             overflow: hidden;
+            background: linear-gradient(to bottom, #4e54c8, #8f94fb);
         }
 
         .reactive-bg {
@@ -279,13 +280,7 @@
                 rgba(78, 84, 200, 0.3),
                 rgba(143, 148, 251, 0.1)
             );
-            transition: all 0.3s ease;
-        }
-
-        .particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
+            transition: all 0.5s ease;
         }
 
         .particle {
@@ -293,7 +288,26 @@
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             pointer-events: none;
-            transition: transform 0.2s ease;
+            transition: transform 0.3s ease;
+            animation: floatBubble 15s infinite linear;
+        }
+
+        @keyframes floatBubble {
+            0% {
+                transform: translateY(100vh) translateX(0);
+            }
+            50% {
+                transform: translateY(50vh) translateX(20px);
+            }
+            100% {
+                transform: translateY(-100vh) translateX(0);
+            }
+        }
+
+        /* Ensure content stays on top */
+        .your-content {
+            position: relative;
+            z-index: 1;
         }
     </style>
 </head>
@@ -303,51 +317,57 @@
         <div class="particles" id="particlesContainer"></div>
     </div>
 
+    <!-- Your existing content goes here -->
+    <div class="your-content">
+        <!-- Content here stays on top of the background -->
+    </div>
+
     <script>
         const bg = document.querySelector('.reactive-bg');
         const container = document.getElementById('particlesContainer');
-        
-        // Create particles
+
+        // Create particles with varied sizes and speeds
         for (let i = 0; i < 50; i++) {
             const particle = document.createElement('div');
             particle.className = 'particle';
-            particle.style.width = Math.random() * 30 + 10 + 'px';
-            particle.style.height = particle.style.width;
+            
+            const size = Math.random() * 30 + 10;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            
             particle.style.left = Math.random() * 100 + '%';
-            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+            particle.style.animationDelay = -(Math.random() * 15) + 's';
+            
             container.appendChild(particle);
         }
 
-        const particles = document.querySelectorAll('.particle');
-
         document.addEventListener('mousemove', (e) => {
-            // Update gradient position
             const x = (e.clientX / window.innerWidth) * 100;
             const y = (e.clientY / window.innerHeight) * 100;
             bg.style.setProperty('--x', x + '%');
             bg.style.setProperty('--y', y + '%');
 
-            // Move particles
+            const particles = document.querySelectorAll('.particle');
             particles.forEach(particle => {
                 const rect = particle.getBoundingClientRect();
                 const deltaX = e.clientX - (rect.left + rect.width / 2);
                 const deltaY = e.clientY - (rect.top + rect.height / 2);
                 const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
                 
-                if (distance < 300) {
+                if (distance < 200) {
                     const angle = Math.atan2(deltaY, deltaX);
-                    const force = (300 - distance) / 30;
+                    const force = (200 - distance) / 20;
                     const moveX = Math.cos(angle) * force;
                     const moveY = Math.sin(angle) * force;
-                    particle.style.transform = `translate(${moveX}px, ${moveY}px)`;
-                } else {
-                    particle.style.transform = 'translate(0, 0)';
+                    particle.style.transform = `translate(${-moveX}px, ${-moveY}px)`;
                 }
             });
         });
     </script>
 </body>
 </html>
+
 
         
     <!-------------------------- JS -------------------------->
