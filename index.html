@@ -255,119 +255,150 @@
     </section>
 
         <!-------------------------- Contact Me -------------------------->
-
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <style>
-        .background-wrapper {
+        * {
+            margin: 0;
+            padding: 0;
+            cursor: none;
+        }
+
+        body {
+            background: #0f0f0f;
+            overflow: hidden;
+        }
+
+        .cursor {
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s;
+        }
+
+        .cursor-trail {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform 0.3s ease;
+        }
+
+        .interactive-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
-            overflow: hidden;
-            background: linear-gradient(to bottom, #4e54c8, #8f94fb);
-        }
-
-        .reactive-bg {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(
-                circle at var(--x) var(--y),
-                rgba(78, 84, 200, 0.3),
-                rgba(143, 148, 251, 0.1)
-            );
-            transition: all 0.5s ease;
         }
 
         .particle {
             position: absolute;
-            background: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
             border-radius: 50%;
-            pointer-events: none;
-            transition: transform 0.3s ease;
-            animation: floatBubble 15s infinite linear;
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        @keyframes floatBubble {
-            0% {
-                transform: translateY(100vh) translateX(0);
-            }
-            50% {
-                transform: translateY(50vh) translateX(20px);
-            }
-            100% {
-                transform: translateY(-100vh) translateX(0);
-            }
-        }
-
-        /* Ensure content stays on top */
-        .your-content {
+        .content {
             position: relative;
             z-index: 1;
+            color: white;
         }
     </style>
 </head>
 <body>
-    <div class="background-wrapper">
-        <div class="reactive-bg"></div>
-        <div class="particles" id="particlesContainer"></div>
-    </div>
+    <div class="cursor"></div>
+    <div class="cursor-trail"></div>
+    <div class="interactive-bg" id="bgContainer"></div>
 
-    <!-- Your existing content goes here -->
-    <div class="your-content">
-        <!-- Content here stays on top of the background -->
+    <div class="content">
+        <!-- Your content goes here -->
     </div>
 
     <script>
-        const bg = document.querySelector('.reactive-bg');
-        const container = document.getElementById('particlesContainer');
-
-        // Create particles with varied sizes and speeds
-        for (let i = 0; i < 50; i++) {
+        const cursor = document.querySelector('.cursor');
+        const cursorTrail = document.querySelector('.cursor-trail');
+        const container = document.getElementById('bgContainer');
+        
+        // Create particles
+        const particleCount = 40;
+        const particles = [];
+        
+        for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
             particle.className = 'particle';
-            
-            const size = Math.random() * 30 + 10;
+            const size = Math.random() * 100 + 50;
             particle.style.width = size + 'px';
             particle.style.height = size + 'px';
-            
             particle.style.left = Math.random() * 100 + '%';
-            particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
-            particle.style.animationDelay = -(Math.random() * 15) + 's';
-            
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.opacity = Math.random() * 0.5 + 0.2;
             container.appendChild(particle);
+            particles.push(particle);
         }
 
+        // Mouse movement handler
         document.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth) * 100;
-            const y = (e.clientY / window.innerHeight) * 100;
-            bg.style.setProperty('--x', x + '%');
-            bg.style.setProperty('--y', y + '%');
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
 
-            const particles = document.querySelectorAll('.particle');
-            particles.forEach(particle => {
+            // Update cursor
+            cursor.style.transform = `translate(${mouseX - 10}px, ${mouseY - 10}px)`;
+            cursorTrail.animate({
+                transform: `translate(${mouseX - 20}px, ${mouseY - 20}px)`
+            }, {
+                duration: 500,
+                fill: "forwards"
+            });
+
+            // Update particles
+            particles.forEach((particle, index) => {
                 const rect = particle.getBoundingClientRect();
-                const deltaX = e.clientX - (rect.left + rect.width / 2);
-                const deltaY = e.clientY - (rect.top + rect.height / 2);
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                const deltaX = mouseX - centerX;
+                const deltaY = mouseY - centerY;
                 const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
                 
-                if (distance < 200) {
+                const maxDistance = 400;
+                if (distance < maxDistance) {
+                    const force = (maxDistance - distance) / maxDistance;
                     const angle = Math.atan2(deltaY, deltaX);
-                    const force = (200 - distance) / 20;
-                    const moveX = Math.cos(angle) * force;
-                    const moveY = Math.sin(angle) * force;
-                    particle.style.transform = `translate(${-moveX}px, ${-moveY}px)`;
+                    const pushX = Math.cos(angle) * force * -50;
+                    const pushY = Math.sin(angle) * force * -50;
+                    
+                    particle.style.transform = `translate(${pushX}px, ${pushY}px) scale(${1 + force * 0.3})`;
+                    particle.style.filter = `hue-rotate(${index * 20 + distance}deg)`;
+                } else {
+                    particle.style.transform = 'translate(0, 0) scale(1)';
                 }
+            });
+        });
+
+        // Hover effect on interactive elements
+        document.querySelectorAll('a, button').forEach(elem => {
+            elem.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(1.5)';
+                cursorTrail.style.transform = 'scale(1.5)';
+            });
+            elem.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+                cursorTrail.style.transform = 'scale(1)';
             });
         });
     </script>
 </body>
 </html>
-
 
         
     <!-------------------------- JS -------------------------->
