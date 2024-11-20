@@ -367,12 +367,36 @@
     </section>
 
         <!-------------------------- Contact Me -------------------------->
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <style>
         * {
+            margin: 0;
+            padding: 0;
             cursor: none;
+        }
+
+        body {
+            background: #0f0f0f;
+            overflow: hidden;
+        }
+
+        .reactive-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            display: grid;
+            grid-template-columns: repeat(20, 1fr);
+            grid-template-rows: repeat(20, 1fr);
+        }
+
+        .cell {
+            background: rgba(255, 255, 255, 0.03);
+            transition: all 0.3s ease;
         }
 
         .custom-cursor {
@@ -397,40 +421,80 @@
             z-index: 9998;
             transition: all 0.3s ease-out;
         }
+
+        .content {
+            position: relative;
+            z-index: 1;
+        }
     </style>
 </head>
 <body>
     <div class="custom-cursor"></div>
     <div class="cursor-ring"></div>
+    <div class="reactive-bg" id="bgContainer"></div>
 
-    <!-- Your existing content stays here -->
+    <div class="content">
+        <!-- Your content goes here -->
+    </div>
 
     <script>
         const cursor = document.querySelector('.custom-cursor');
         const ring = document.querySelector('.cursor-ring');
+        const container = document.getElementById('bgContainer');
+        const cells = [];
+
+        // Create grid cells
+        for (let i = 0; i < 400; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            container.appendChild(cell);
+            cells.push(cell);
+        }
 
         document.addEventListener('mousemove', (e) => {
-            cursor.style.transform = `translate(${e.clientX - 10}px, ${e.clientY - 10}px)`;
-            ring.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+
+            // Update cursor
+            cursor.style.transform = `translate(${mouseX - 10}px, ${mouseY - 10}px)`;
+            ring.style.transform = `translate(${mouseX - 20}px, ${mouseY - 20}px)`;
+
+            // Update cells
+            cells.forEach(cell => {
+                const rect = cell.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                const deltaX = mouseX - centerX;
+                const deltaY = mouseY - centerY;
+                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                
+                if (distance < 200) {
+                    const effect = 1 - distance / 200;
+                    cell.style.transform = `scale(${1 + effect * 0.2})`;
+                    cell.style.background = `rgba(255, 255, 255, ${0.03 + effect * 0.1})`;
+                } else {
+                    cell.style.transform = 'scale(1)';
+                    cell.style.background = 'rgba(255, 255, 255, 0.03)';
+                }
+            });
         });
 
-        document.querySelectorAll('a, button, input, textarea').forEach(elem => {
+        // Interactive elements hover effect
+        document.querySelectorAll('a, button').forEach(elem => {
             elem.addEventListener('mouseenter', () => {
                 cursor.style.transform = 'scale(1.5) translate(-33%, -33%)';
                 ring.style.transform = 'scale(1.5) translate(-33%, -33%)';
-                ring.style.borderColor = '#00ff00';
             });
             
             elem.addEventListener('mouseleave', () => {
                 cursor.style.transform = 'scale(1) translate(-50%, -50%)';
                 ring.style.transform = 'scale(1) translate(-50%, -50%)';
-                ring.style.borderColor = 'rgba(255, 255, 255, 0.8)';
             });
         });
     </script>
 </body>
 </html>
-
 
         
     <!-------------------------- JS -------------------------->
