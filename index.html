@@ -214,30 +214,22 @@
    <!DOCTYPE html>
 <html>
 <head>
-    <title>Cool Floating Bubbles Background</title>
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow-x: hidden;
-        }
-
         .bubble-background {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            min-height: 100vh;
+            height: 100%;
+            z-index: -1;
             background: linear-gradient(to bottom, #4e54c8, #8f94fb);
-            position: relative;
         }
 
         .bubbles {
             position: absolute;
             width: 100%;
             height: 100%;
-            z-index: 0;
             overflow: hidden;
-            top: 0;
-            left: 0;
         }
 
         .bubble {
@@ -246,6 +238,7 @@
             background: rgba(255, 255, 255, 0.15);
             border-radius: 50%;
             animation: float 8s infinite ease-in;
+            transition: transform 0.3s ease;
         }
 
         @keyframes float {
@@ -262,27 +255,17 @@
             }
         }
 
-        /* Creating multiple bubbles with different sizes and animations */
-        .bubble:nth-child(1) { left: 10%; width: 80px; height: 80px; animation-delay: 0s; }
-        .bubble:nth-child(2) { left: 20%; width: 40px; height: 40px; animation-delay: 1s; animation-duration: 6s; }
-        .bubble:nth-child(3) { left: 35%; width: 60px; height: 60px; animation-delay: 2s; animation-duration: 7s; }
-        .bubble:nth-child(4) { left: 50%; width: 30px; height: 30px; animation-delay: 3s; animation-duration: 5s; }
-        .bubble:nth-child(5) { left: 65%; width: 70px; height: 70px; animation-delay: 4s; animation-duration: 9s; }
-        .bubble:nth-child(6) { left: 80%; width: 45px; height: 45px; animation-delay: 5s; animation-duration: 6s; }
-        .bubble:nth-child(7) { left: 90%; width: 55px; height: 55px; animation-delay: 6s; animation-duration: 8s; }
-        .bubble:nth-child(8) { left: 15%; width: 65px; height: 65px; animation-delay: 7s; animation-duration: 7s; }
-        .bubble:nth-child(9) { left: 40%; width: 35px; height: 35px; animation-delay: 8s; animation-duration: 6s; }
-        .bubble:nth-child(10) { left: 75%; width: 50px; height: 50px; animation-delay: 9s; animation-duration: 8s; }
-
-        .content {
-            position: relative;
-            z-index: 1;
-            padding: 20px;
-            color: white;
-        }
+        .bubble:nth-child(1) { left: 10%; width: 80px; height: 80px; }
+        .bubble:nth-child(2) { left: 20%; width: 40px; height: 40px; animation-duration: 6s; }
+        .bubble:nth-child(3) { left: 35%; width: 60px; height: 60px; animation-duration: 7s; }
+        .bubble:nth-child(4) { left: 50%; width: 30px; height: 30px; animation-duration: 5s; }
+        .bubble:nth-child(5) { left: 65%; width: 70px; height: 70px; animation-duration: 9s; }
+        .bubble:nth-child(6) { left: 80%; width: 45px; height: 45px; animation-duration: 6s; }
+        .bubble:nth-child(7) { left: 90%; width: 55px; height: 55px; animation-duration: 8s; }
     </style>
 </head>
 <body>
+    <!-- Add this at the start of your body, before your existing content -->
     <div class="bubble-background">
         <div class="bubbles">
             <div class="bubble"></div>
@@ -292,15 +275,39 @@
             <div class="bubble"></div>
             <div class="bubble"></div>
             <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-        </div>
-        <div class="content">
-            <h1>Your Amazing Content Here!</h1>
-            <!-- Add your website content here -->
         </div>
     </div>
+
+    <script>
+        document.addEventListener('mousemove', (e) => {
+            const bubbles = document.querySelectorAll('.bubble');
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+
+            bubbles.forEach(bubble => {
+                const rect = bubble.getBoundingClientRect();
+                const bubbleX = rect.left + rect.width / 2;
+                const bubbleY = rect.top + rect.height / 2;
+
+                const deltaX = mouseX - bubbleX;
+                const deltaY = mouseY - bubbleY;
+                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+                if (distance < 200) {
+                    const angle = Math.atan2(deltaY, deltaX);
+                    const push = 20 * (1 - distance / 200);
+                    const moveX = Math.cos(angle) * push;
+                    const moveY = Math.sin(angle) * push;
+                    bubble.style.transform = `translate(${-moveX}px, ${-moveY}px)`;
+                } else {
+                    bubble.style.transform = '';
+                }
+            });
+        });
+    </script>
+
+    <!-- Your existing content stays exactly the same! -->
+
 </body>
 </html>
 
