@@ -333,7 +333,7 @@
     <style>
         .pdf-dock {
             position: fixed;
-            bottom: 20px;
+            bottom: -350px; /* Start hidden */
             left: 50%;
             transform: translateX(-50%);
             width: 90%;
@@ -348,9 +348,12 @@
             transition: all 0.3s ease;
         }
 
+        .pdf-dock.active {
+            bottom: 20px;
+        }
+
         .pdf-dock:hover {
             background: rgba(33, 150, 243, 0.15);
-            transform: translateX(-50%) translateY(-5px);
             box-shadow: 0 15px 40px rgba(33, 150, 243, 0.2);
         }
 
@@ -385,31 +388,32 @@
             transform: translateY(-2px);
         }
 
-        .minimize-button {
-            position: absolute;
-            top: -30px;
-            right: 20px;
+        .toggle-button {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             background: rgba(33, 150, 243, 0.2);
-            border: none;
-            border-radius: 5px;
-            padding: 5px 15px;
+            border: 1px solid rgba(33, 150, 243, 0.3);
+            border-radius: 8px;
+            padding: 8px 20px;
             color: #2196F3;
             cursor: pointer;
             transition: all 0.3s ease;
+            z-index: 1001;
+            font-weight: 500;
         }
 
-        .minimize-button:hover {
+        .toggle-button:hover {
             background: rgba(33, 150, 243, 0.3);
-        }
-
-        .minimized {
-            transform: translateX(-50%) translateY(calc(100% + 20px));
+            transform: translateX(-50%) translateY(-2px);
         }
     </style>
 </head>
 <body>
+    <button class="toggle-button" onclick="toggleViewer()">Toggle PDF Viewer</button>
+    
     <div class="pdf-dock" id="pdfDock">
-        <button class="minimize-button" onclick="toggleMinimize()">Toggle Viewer</button>
         <object class="pdf-viewer" type="application/pdf" data="your-pdf-file.pdf">
             <embed src="your-pdf-file.pdf" type="application/pdf">
         </object>
@@ -425,9 +429,9 @@
     </div>
 
     <script>
-        function toggleMinimize() {
+        function toggleViewer() {
             const dock = document.getElementById('pdfDock');
-            dock.classList.toggle('minimized');
+            dock.classList.toggle('active');
         }
     </script>
 </body>
