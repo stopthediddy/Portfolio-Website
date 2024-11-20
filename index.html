@@ -367,86 +367,69 @@
     </section>
 
         <!-------------------------- Contact Me -------------------------->
-<div class="interactive-background"></div>
-<div class="cursor-dot"></div>
-<div class="cursor-outline"></div>
+<<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        * {
+            cursor: none;
+        }
 
-<style>
-.interactive-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    background: linear-gradient(45deg, #2b2b2b, #1a1a1a);
-}
+        .custom-cursor {
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.2s ease;
+        }
 
-.cell {
-    position: absolute;
-    width: 150px;
-    height: 150px;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
+        .cursor-ring {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="custom-cursor"></div>
+    <div class="cursor-ring"></div>
 
-.cursor-dot {
-    width: 8px;
-    height: 8px;
-    background: white;
-    position: fixed;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-}
+    <!-- Your existing content stays here -->
 
-.cursor-outline {
-    width: 40px;
-    height: 40px;
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    position: fixed;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    transition: transform 0.2s ease;
-}
-</style>
+    <script>
+        const cursor = document.querySelector('.custom-cursor');
+        const ring = document.querySelector('.cursor-ring');
 
-<script>
-const bg = document.querySelector('.interactive-background');
-const cursorDot = document.querySelector('.cursor-dot');
-const cursorOutline = document.querySelector('.cursor-outline');
-let cells = [];
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.transform = `translate(${e.clientX - 10}px, ${e.clientY - 10}px)`;
+            ring.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
+        });
 
-function createCell(x, y) {
-    const cell = document.createElement('div');
-    cell.className = 'cell';
-    cell.style.left = x + 'px';
-    cell.style.top = y + 'px';
-    bg.appendChild(cell);
-    cells.push(cell);
-    
-    if (cells.length > 15) {
-        const oldCell = cells.shift();
-        oldCell.remove();
-    }
-}
-
-let lastMove = 0;
-document.addEventListener('mousemove', (e) => {
-    const now = Date.now();
-    if (now - lastMove > 50) {
-        createCell(e.clientX, e.clientY);
-        lastMove = now;
-    }
-    
-    cursorDot.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
-    cursorOutline.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
-});
-</script>
+        document.querySelectorAll('a, button, input, textarea').forEach(elem => {
+            elem.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(1.5) translate(-33%, -33%)';
+                ring.style.transform = 'scale(1.5) translate(-33%, -33%)';
+                ring.style.borderColor = '#00ff00';
+            });
+            
+            elem.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1) translate(-50%, -50%)';
+                ring.style.transform = 'scale(1) translate(-50%, -50%)';
+                ring.style.borderColor = 'rgba(255, 255, 255, 0.8)';
+            });
+        });
+    </script>
+</body>
+</html>
 
 
         
