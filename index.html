@@ -24,7 +24,7 @@
             cursor: none;
         }
 
-        .custom-cursor {
+        .cursor {
             width: 20px;
             height: 20px;
             background: #fff;
@@ -46,85 +46,37 @@
             z-index: 9998;
             transition: all 0.3s ease-out;
         }
-
-        /* Optional: Add a cool gradient trail effect */
-        .cursor-trail {
-            width: 100%;
-            height: 100%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9997;
-        }
-
-        .trail-dot {
-            position: absolute;
-            width: 5px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            transition: opacity 0.5s ease;
-        }
     </style>
 </head>
 <body>
-    <div class="custom-cursor"></div>
+    <div class="cursor"></div>
     <div class="cursor-ring"></div>
-    <div class="cursor-trail"></div>
-
-    <!-- Your existing content stays here -->
 
     <script>
-        const cursor = document.querySelector('.custom-cursor');
+        const cursor = document.querySelector('.cursor');
         const ring = document.querySelector('.cursor-ring');
-        const trail = document.querySelector('.cursor-trail');
-        let dots = [];
 
         document.addEventListener('mousemove', (e) => {
-            // Update main cursor
             cursor.style.transform = `translate(${e.clientX - 10}px, ${e.clientY - 10}px)`;
             ring.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
-
-            // Create trail effect
-            const dot = document.createElement('div');
-            dot.className = 'trail-dot';
-            dot.style.left = e.clientX + 'px';
-            dot.style.top = e.clientY + 'px';
-            trail.appendChild(dot);
-            dots.push(dot);
-
-            // Fade out and remove trail dots
-            setTimeout(() => {
-                dot.style.opacity = '0';
-                setTimeout(() => {
-                    dot.remove();
-                    dots = dots.filter(d => d !== dot);
-                }, 500);
-            }, 100);
-
-            // Limit trail length
-            if (dots.length > 20) {
-                const oldDot = dots.shift();
-                oldDot.remove();
-            }
         });
 
-        // Cool hover effects for interactive elements
-        document.querySelectorAll('a, button, input, textarea').forEach(elem => {
+        // Interactive elements hover effect
+        document.querySelectorAll('a, button').forEach(elem => {
             elem.addEventListener('mouseenter', () => {
                 cursor.style.transform = 'scale(1.5) translate(-33%, -33%)';
                 ring.style.transform = 'scale(1.5) translate(-33%, -33%)';
-                ring.style.borderColor = '#00ff00';
             });
             
             elem.addEventListener('mouseleave', () => {
                 cursor.style.transform = 'scale(1) translate(-50%, -50%)';
                 ring.style.transform = 'scale(1) translate(-50%, -50%)';
-                ring.style.borderColor = 'rgba(255, 255, 255, 0.8)';
             });
         });
     </script>
 </body>
 </html>
+
 
     <!-------------------------- Header Area -------------------------->
     <header class="header-area">
