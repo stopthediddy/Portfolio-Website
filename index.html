@@ -24,53 +24,59 @@
             cursor: none;
         }
 
-        .cursor {
-            width: 20px;
-            height: 20px;
+        .glow-cursor {
+            width: 15px;
+            height: 15px;
             background: #fff;
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
             z-index: 9999;
-            mix-blend-mode: difference;
-            transition: transform 0.2s ease;
+            box-shadow: 0 0 15px #fff,
+                        0 0 30px #0ff,
+                        0 0 40px #0ff;
+            transition: transform 0.15s ease;
         }
 
-        .cursor-ring {
-            width: 40px;
-            height: 40px;
+        .glow-ring {
+            width: 30px;
+            height: 30px;
+            background: transparent;
             border: 2px solid rgba(255, 255, 255, 0.8);
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
             z-index: 9998;
-            transition: all 0.3s ease-out;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            transition: all 0.2s ease-out;
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
-    <div class="cursor"></div>
-    <div class="cursor-ring"></div>
+    <div class="glow-cursor"></div>
+    <div class="glow-ring"></div>
 
     <script>
-        const cursor = document.querySelector('.cursor');
-        const ring = document.querySelector('.cursor-ring');
+        const cursor = document.querySelector('.glow-cursor');
+        const ring = document.querySelector('.glow-ring');
 
         document.addEventListener('mousemove', (e) => {
-            cursor.style.transform = `translate(${e.clientX - 10}px, ${e.clientY - 10}px)`;
-            ring.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
+            cursor.style.transform = `translate(${e.clientX - 7.5}px, ${e.clientY - 7.5}px)`;
+            ring.style.transform = `translate(${e.clientX - 15}px, ${e.clientY - 15}px)`;
         });
 
-        // Interactive elements hover effect
         document.querySelectorAll('a, button').forEach(elem => {
             elem.addEventListener('mouseenter', () => {
-                cursor.style.transform = 'scale(1.5) translate(-33%, -33%)';
-                ring.style.transform = 'scale(1.5) translate(-33%, -33%)';
+                cursor.style.transform = 'scale(2) translate(-25%, -25%)';
+                ring.style.transform = 'scale(1.5) translate(-25%, -25%)';
+                cursor.style.boxShadow = '0 0 20px #fff, 0 0 40px #0ff, 0 0 50px #0ff';
             });
             
             elem.addEventListener('mouseleave', () => {
                 cursor.style.transform = 'scale(1) translate(-50%, -50%)';
                 ring.style.transform = 'scale(1) translate(-50%, -50%)';
+                cursor.style.boxShadow = '0 0 15px #fff, 0 0 30px #0ff, 0 0 40px #0ff';
             });
         });
     </script>
