@@ -255,167 +255,87 @@
     </section>
 
         <!-------------------------- Contact Me -------------------------->
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            cursor: none;
-        }
+<div class="interactive-background"></div>
+<div class="cursor-dot"></div>
+<div class="cursor-outline"></div>
 
-        body {
-            background: #f4f1ea;
-            font-family: 'Times New Roman', serif;
-            overflow: hidden;
-        }
+<style>
+.interactive-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: linear-gradient(45deg, #2b2b2b, #1a1a1a);
+}
 
-        .cursor {
-            width: 12px;
-            height: 12px;
-            background: #333;
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            mix-blend-mode: difference;
-        }
+.cell {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
 
-        .cursor-trail {
-            width: 40px;
-            height: 40px;
-            border: 2px solid #333;
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9998;
-            opacity: 0.5;
-        }
+.cursor-dot {
+    width: 8px;
+    height: 8px;
+    background: white;
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+}
 
-        .newspaper-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            display: grid;
-            grid-template-columns: repeat(20, 1fr);
-            grid-template-rows: repeat(20, 1fr);
-        }
+.cursor-outline {
+    width: 40px;
+    height: 40px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.2s ease;
+}
+</style>
 
-        .cell {
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            background: rgba(244, 241, 234, 0.8);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 8px;
-            color: rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-        }
+<script>
+const bg = document.querySelector('.interactive-background');
+const cursorDot = document.querySelector('.cursor-dot');
+const cursorOutline = document.querySelector('.cursor-outline');
+let cells = [];
 
-        .text-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            opacity: 0.03;
-            background-image: repeating-linear-gradient(
-                45deg,
-                #000 0px,
-                #000 1px,
-                transparent 1px,
-                transparent 4px
-            );
-            z-index: -1;
-        }
+function createCell(x, y) {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.style.left = x + 'px';
+    cell.style.top = y + 'px';
+    bg.appendChild(cell);
+    cells.push(cell);
+    
+    if (cells.length > 15) {
+        const oldCell = cells.shift();
+        oldCell.remove();
+    }
+}
 
-        .content {
-            position: relative;
-            z-index: 1;
-            color: #333;
-        }
-    </style>
-</head>
-<body>
-    <div class="cursor"></div>
-    <div class="cursor-trail"></div>
-    <div class="newspaper-bg" id="bgContainer"></div>
-    <div class="text-overlay"></div>
+let lastMove = 0;
+document.addEventListener('mousemove', (e) => {
+    const now = Date.now();
+    if (now - lastMove > 50) {
+        createCell(e.clientX, e.clientY);
+        lastMove = now;
+    }
+    
+    cursorDot.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+    cursorOutline.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
+});
+</script>
 
-    <div class="content">
-        <!-- Your content goes here -->
-    </div>
-
-    <script>
-        const cursor = document.querySelector('.cursor');
-        const cursorTrail = document.querySelector('.cursor-trail');
-        const container = document.getElementById('bgContainer');
-        const cells = [];
-        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-        // Create grid cells
-        for (let i = 0; i < 400; i++) {
-            const cell = document.createElement('div');
-            cell.className = 'cell';
-            cell.textContent = letters[Math.floor(Math.random() * letters.length)];
-            container.appendChild(cell);
-            cells.push(cell);
-        }
-
-        // Mouse movement handler
-        document.addEventListener('mousemove', (e) => {
-            const mouseX = e.clientX;
-            const mouseY = e.clientY;
-
-            // Update cursor
-            cursor.style.transform = `translate(${mouseX - 6}px, ${mouseY - 6}px)`;
-            cursorTrail.animate({
-                transform: `translate(${mouseX - 20}px, ${mouseY - 20}px)`
-            }, {
-                duration: 800,
-                fill: "forwards"
-            });
-
-            // Update cells
-            cells.forEach(cell => {
-                const rect = cell.getBoundingClientRect();
-                const cellX = rect.left + rect.width / 2;
-                const cellY = rect.top + rect.height / 2;
-                
-                const deltaX = mouseX - cellX;
-                const deltaY = mouseY - cellY;
-                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-                
-                if (distance < 200) {
-                    const effect = 1 - distance / 200;
-                    cell.style.transform = `scale(${1 + effect * 0.2})`;
-                    cell.style.opacity = 1 - effect * 0.5;
-                    cell.textContent = letters[Math.floor(Math.random() * letters.length)];
-                } else {
-                    cell.style.transform = 'scale(1)';
-                    cell.style.opacity = 1;
-                }
-            });
-        });
-
-        // Hover effects
-        document.querySelectorAll('a, button').forEach(elem => {
-            elem.addEventListener('mouseenter', () => {
-                cursorTrail.style.transform = 'scale(1.5)';
-            });
-            elem.addEventListener('mouseleave', () => {
-                cursorTrail.style.transform = 'scale(1)';
-            });
-        });
-    </script>
-</body>
-</html>
 
         
     <!-------------------------- JS -------------------------->
