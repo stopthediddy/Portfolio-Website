@@ -84,158 +84,53 @@
 
 
     <!-------------------------- Header Area -------------------------->
-    <header class="header-area">
-    <div class="container">
-        <div class="header">
-            <a href="" class="logo">
-                <img src="files/signaturecropped.png" alt="" class="signature">
-                <i class="fa fa-bolt"></i>
-            </a>
-            <ul class="navbar">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#education">Education</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Essay Preview</a></li>
-            </ul>
-            <div class="menu_icon">
-                <i class="fa fa-bars"></i>
+  <header class="header-area">
+
+        <div class="container">
+
+            <div class="header">
+
+               
+
+                <a href="" class="logo">
+
+                    <img src="files/signaturecropped.png" alt="" class="signature">
+
+                    <i class="fa fa-bolt"></i>
+
+                </a>
+
+                   
+
+                <ul class="navbar">
+
+                    <li><a href="#home">Home</a></li>
+
+                    <li><a href="#about">About</a></li>
+
+                    <li><a href="#education">Education</a></li>
+
+                    <li><a href="#projects">Projects</a></li>
+
+                    <li><a href="#contact">Essay Preview</a></li>
+
+                </ul>
+
+                
+
+                <div class="menu_icon">
+
+                    <i class="fa fa-bars"></i>
+
+                </div>
+
+
+
             </div>
-        </div>
-    </div>
 
-    <style>
-        .header-area {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        </div> 
 
-        .header-area::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 200%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            animation: shine 3s infinite;
-        }
-
-        .header-area::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
-                        rgba(255, 255, 255, 0.1) 0%, transparent 60%);
-        }
-
-        @keyframes shine {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(50%); }
-        }
-
-        .header {
-            position: relative;
-            z-index: 1;
-        }
-
-        .navbar a {
-            color: #fff;
-            transition: color 0.3s ease;
-        }
-
-        .navbar a:hover {
-            color: #4dabf7;
-        }
-    </style>
-<header class="header-area">
-    <div class="container">
-        <div class="header">
-            <a href="" class="logo">
-                <img src="files/signaturecropped.png" alt="" class="signature">
-                <i class="fa fa-bolt"></i>
-            </a>
-            <ul class="navbar">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#education">Education</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Essay Preview</a></li>
-            </ul>
-            <div class="menu_icon">
-                <i class="fa fa-bars"></i>
-            </div>
-        </div>
-    </div>
-
-    <style>
-        .header-area {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .header-area::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 200%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            animation: shine 3s infinite;
-        }
-
-        .header-area::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
-                        rgba(255, 255, 255, 0.1) 0%, transparent 60%);
-        }
-
-        @keyframes shine {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(50%); }
-        }
-
-        .header {
-            position: relative;
-            z-index: 1;
-        }
-
-        .navbar a {
-            color: #fff;
-            transition: color 0.3s ease;
-        }
-
-        .navbar a:hover {
-            color: #4dabf7;
-        }
-    </style>
-
-    <script>
-        document.querySelector('.header-area').addEventListener('mousemove', (e) => {
-            const rect = e.target.getBoundingClientRect();
-            const x = ((e.clientX - rect.left) / rect.width) * 100;
-            const y = ((e.clientY - rect.top) / rect.height) * 100;
-            e.target.style.setProperty('--x', `${x}%`);
-            e.target.style.setProperty('--y', `${y}%`);
-        });
-    </script>
-</header>
-
+    </header>
 
  
     <!-------------------------- Home Page -------------------------->
