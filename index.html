@@ -266,59 +266,87 @@
         }
 
         body {
-            background: #0f0f0f;
+            background: #f4f1ea;
+            font-family: 'Times New Roman', serif;
             overflow: hidden;
         }
 
         .cursor {
-            width: 20px;
-            height: 20px;
-            background: rgba(255, 255, 255, 0.8);
+            width: 12px;
+            height: 12px;
+            background: #333;
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
             z-index: 9999;
-            transition: transform 0.1s;
+            mix-blend-mode: difference;
         }
 
         .cursor-trail {
             width: 40px;
             height: 40px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            border: 2px solid #333;
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
             z-index: 9998;
-            transition: transform 0.3s ease;
+            opacity: 0.5;
         }
 
-        .interactive-bg {
+        .newspaper-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
+            display: grid;
+            grid-template-columns: repeat(20, 1fr);
+            grid-template-rows: repeat(20, 1fr);
         }
 
-        .particle {
-            position: absolute;
-            background: linear-gradient(45deg, #00ffff, #ff00ff);
-            border-radius: 50%;
-            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        .cell {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: rgba(244, 241, 234, 0.8);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .text-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.03;
+            background-image: repeating-linear-gradient(
+                45deg,
+                #000 0px,
+                #000 1px,
+                transparent 1px,
+                transparent 4px
+            );
+            z-index: -1;
         }
 
         .content {
             position: relative;
             z-index: 1;
-            color: white;
+            color: #333;
         }
     </style>
 </head>
 <body>
     <div class="cursor"></div>
     <div class="cursor-trail"></div>
-    <div class="interactive-bg" id="bgContainer"></div>
+    <div class="newspaper-bg" id="bgContainer"></div>
+    <div class="text-overlay"></div>
 
     <div class="content">
         <!-- Your content goes here -->
@@ -328,22 +356,16 @@
         const cursor = document.querySelector('.cursor');
         const cursorTrail = document.querySelector('.cursor-trail');
         const container = document.getElementById('bgContainer');
-        
-        // Create particles
-        const particleCount = 40;
-        const particles = [];
-        
-        for (let i = 0; i < particleCount; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            const size = Math.random() * 100 + 50;
-            particle.style.width = size + 'px';
-            particle.style.height = size + 'px';
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.top = Math.random() * 100 + '%';
-            particle.style.opacity = Math.random() * 0.5 + 0.2;
-            container.appendChild(particle);
-            particles.push(particle);
+        const cells = [];
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        // Create grid cells
+        for (let i = 0; i < 400; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.textContent = letters[Math.floor(Math.random() * letters.length)];
+            container.appendChild(cell);
+            cells.push(cell);
         }
 
         // Mouse movement handler
@@ -352,47 +374,42 @@
             const mouseY = e.clientY;
 
             // Update cursor
-            cursor.style.transform = `translate(${mouseX - 10}px, ${mouseY - 10}px)`;
+            cursor.style.transform = `translate(${mouseX - 6}px, ${mouseY - 6}px)`;
             cursorTrail.animate({
                 transform: `translate(${mouseX - 20}px, ${mouseY - 20}px)`
             }, {
-                duration: 500,
+                duration: 800,
                 fill: "forwards"
             });
 
-            // Update particles
-            particles.forEach((particle, index) => {
-                const rect = particle.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
+            // Update cells
+            cells.forEach(cell => {
+                const rect = cell.getBoundingClientRect();
+                const cellX = rect.left + rect.width / 2;
+                const cellY = rect.top + rect.height / 2;
                 
-                const deltaX = mouseX - centerX;
-                const deltaY = mouseY - centerY;
+                const deltaX = mouseX - cellX;
+                const deltaY = mouseY - cellY;
                 const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
                 
-                const maxDistance = 400;
-                if (distance < maxDistance) {
-                    const force = (maxDistance - distance) / maxDistance;
-                    const angle = Math.atan2(deltaY, deltaX);
-                    const pushX = Math.cos(angle) * force * -50;
-                    const pushY = Math.sin(angle) * force * -50;
-                    
-                    particle.style.transform = `translate(${pushX}px, ${pushY}px) scale(${1 + force * 0.3})`;
-                    particle.style.filter = `hue-rotate(${index * 20 + distance}deg)`;
+                if (distance < 200) {
+                    const effect = 1 - distance / 200;
+                    cell.style.transform = `scale(${1 + effect * 0.2})`;
+                    cell.style.opacity = 1 - effect * 0.5;
+                    cell.textContent = letters[Math.floor(Math.random() * letters.length)];
                 } else {
-                    particle.style.transform = 'translate(0, 0) scale(1)';
+                    cell.style.transform = 'scale(1)';
+                    cell.style.opacity = 1;
                 }
             });
         });
 
-        // Hover effect on interactive elements
+        // Hover effects
         document.querySelectorAll('a, button').forEach(elem => {
             elem.addEventListener('mouseenter', () => {
-                cursor.style.transform = 'scale(1.5)';
                 cursorTrail.style.transform = 'scale(1.5)';
             });
             elem.addEventListener('mouseleave', () => {
-                cursor.style.transform = 'scale(1)';
                 cursorTrail.style.transform = 'scale(1)';
             });
         });
