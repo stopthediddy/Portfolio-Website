@@ -65,32 +65,71 @@
     </div>
 
         <!-------------------------- About Section -------------------------->
-    <section class="about-area" id="about">
-        <div class="container">
-            <div class="about">
-                
-                <div class="about-content">
-                    <h4>About Me</h4>
-                    <ul>
-                      <li>I am currently pursuing my final year Bachelor's Degree in Electronics and Communication Engineering.I have built a solid foundation in software development, particularly in areas such as Java, SQL, Git, and GitHub.</li>
-                      <li> My expertise in these areas allows me to approach projects with confidence and deliver high-quality results.I have a strong belief in the value of continuous learning and staying adaptable in the ever-evolving world of software engineering.</li>
-                      <li> I actively seek out opportunities to expand my knowledge and skills, embracing new technologies and approaches.Feel free to explore my work and get in touch if you have any questions or opportunities to collaborate. </li>
-                    </ul>
-                </div>
-                                  
-                <div class="about-skills">
-                    <ul>
-                        <li>Name:Sowndhar</li>
-                        <li>Age:20</li>     
-                        <li>From:India</li>
-                        <li>Email:sowndharnewbie@gmail.com</li>
-                        <li>Availabiltiy:Fulltime</li>
-                        <li>Experience&lt;1yr</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
+   
+    <div class="about-container">
+    <div class="about-content">
+        <h2>About Me</h2>
+        <p>Your amazing description here!</p>
+    </div>
+</div>
+
+    
+    
+    .about-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.about-container::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff, #ff0000);
+    background-size: 400% 400%;
+    z-index: -1;
+    border-radius: 15px;
+    animation: gradientBorder 3s ease alternate infinite;
+    transition: 0.3s ease-in-out;
+}
+
+.about-container:hover::before {
+    animation: gradientBorder 1s ease alternate infinite;
+}
+
+.about-content {
+    color: white;
+    text-align: center;
+}
+
+@keyframes gradientBorder {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+/* Cool text effect on hover */
+.about-content h2 {
+    transition: 0.3s ease;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.about-container:hover .about-content h2 {
+    transform: scale(1.1);
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+}
+
 
 
         <!-------------- Education & Internship -------------->
