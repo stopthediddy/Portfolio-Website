@@ -332,8 +332,8 @@
 <head>
     <style>
         .pdf-dock {
-            position: fixed;
-            bottom: -350px; /* Start hidden */
+            position: absolute;
+            bottom: -350px;
             left: 50%;
             transform: translateX(-50%);
             width: 90%;
@@ -350,11 +350,6 @@
 
         .pdf-dock.active {
             bottom: 20px;
-        }
-
-        .pdf-dock:hover {
-            background: rgba(33, 150, 243, 0.15);
-            box-shadow: 0 15px 40px rgba(33, 150, 243, 0.2);
         }
 
         .pdf-viewer {
@@ -391,8 +386,7 @@
         .toggle-button {
             position: fixed;
             bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            right: 20px;
             background: rgba(33, 150, 243, 0.2);
             border: 1px solid rgba(33, 150, 243, 0.3);
             border-radius: 8px;
@@ -406,25 +400,35 @@
 
         .toggle-button:hover {
             background: rgba(33, 150, 243, 0.3);
-            transform: translateX(-50%) translateY(-2px);
+            transform: translateY(-2px);
+        }
+
+        .content-wrapper {
+            position: relative;
+            min-height: 100vh;
+            width: 100%;
         }
     </style>
 </head>
 <body>
-    <button class="toggle-button" onclick="toggleViewer()">Toggle PDF Viewer</button>
-    
-    <div class="pdf-dock" id="pdfDock">
-        <object class="pdf-viewer" type="application/pdf" data="your-pdf-file.pdf">
-            <embed src="your-pdf-file.pdf" type="application/pdf">
-        </object>
+    <div class="content-wrapper">
+        <!-- Your other content goes here -->
         
-        <div class="pdf-controls">
-            <button class="pdf-button" onclick="document.querySelector('.pdf-viewer').contentWindow.print()">
-                Print PDF
-            </button>
-            <button class="pdf-button" onclick="window.open(document.querySelector('.pdf-viewer').data)">
-                Open in New Tab
-            </button>
+        <button class="toggle-button" onclick="toggleViewer()">Toggle PDF Viewer</button>
+        
+        <div class="pdf-dock" id="pdfDock">
+            <object class="pdf-viewer" type="application/pdf" data="your-pdf-file.pdf">
+                <embed src="your-pdf-file.pdf" type="application/pdf">
+            </object>
+            
+            <div class="pdf-controls">
+                <button class="pdf-button" onclick="document.querySelector('.pdf-viewer').contentWindow.print()">
+                    Print PDF
+                </button>
+                <button class="pdf-button" onclick="window.open(document.querySelector('.pdf-viewer').data)">
+                    Open in New Tab
+                </button>
+            </div>
         </div>
     </div>
 
@@ -436,6 +440,7 @@
     </script>
 </body>
 </html>
+
 
         
     <!-------------------------- JS -------------------------->
